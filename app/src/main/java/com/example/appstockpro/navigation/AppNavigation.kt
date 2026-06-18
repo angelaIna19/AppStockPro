@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.appstockpro.screens.EditStockScreen
 import com.example.appstockpro.screens.InventoryScreen
 import com.example.appstockpro.screens.LoginScreen
 import com.example.appstockpro.viewmodel.StockViewModel
@@ -58,8 +59,13 @@ fun AppNavigation() {
             arguments = listOf(navArgument("productoId") { type = NavType.IntType })
         ) { backStackEntry ->
             val id = backStackEntry.arguments?.getInt("productoId") ?: 0
-            // Marcador de posición para la Pantalla 3
-            PlaceholderScreen("Edición Producto ID: $id")
+            EditStockScreen(
+                viewModel = viewModel,
+                productoId = id,
+                onNavigateBack = {
+                    navController.popBackStack()
+                }
+            )
         }
 
         // Pantalla 4: Reporte Financiero
