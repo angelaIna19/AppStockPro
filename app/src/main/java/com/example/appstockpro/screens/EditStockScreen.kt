@@ -95,7 +95,7 @@ fun EditStockScreen(
                     modifier = Modifier.size(64.dp),
                     shape = MaterialTheme.shapes.medium
                 ) {
-                    Text("-1", fontSize = 20.sp)
+                    Text("-", fontSize = 20.sp)
                 }
 
                 Button(
@@ -103,7 +103,7 @@ fun EditStockScreen(
                     modifier = Modifier.size(64.dp),
                     shape = MaterialTheme.shapes.medium
                 ) {
-                    Text("+1", fontSize = 20.sp)
+                    Text("+", fontSize = 20.sp)
                 }
             }
 

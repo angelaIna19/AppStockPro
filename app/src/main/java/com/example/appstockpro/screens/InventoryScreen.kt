@@ -1,18 +1,28 @@
 package com.example.appstockpro.screens
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.Description
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.WarningAmber
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.appstockpro.model.Producto
 import com.example.appstockpro.viewmodel.StockViewModel
 
@@ -28,10 +38,8 @@ fun InventoryScreen(
     onNavigateToEdit: (Int) -> Unit,
     onNavigateToReport: () -> Unit
 ) {
-    // Estado para controlar qué lista mostrar (Todo o Stock Crítico)
     var mostrarSoloCritico by remember { mutableStateOf(false) }
 
-    // Obtenemos la lista filtrada o completa según el estado del botón
     val listaAVisualizar = if (mostrarSoloCritico) {
         viewModel.obtenerProductosEnRiesgo()
     } else {
@@ -41,17 +49,50 @@ fun InventoryScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Operario: $operario", style = MaterialTheme.typography.titleMedium) },
+                title = {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            Icons.Default.Person,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(28.dp)
+                        )
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Text(
+                            text = buildAnnotatedString {
+                                append("Operario: ")
+                                withStyle(style = SpanStyle(
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.primary
+                                )) {
+                                    append(operario)
+                                }
+                            },
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                    }
+                },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    containerColor = Color.Transparent
                 )
             )
         },
         floatingActionButton = {
-            // Requisito: Botón Flotante para ir a la Pantalla 4 (Reporte)
-            FloatingActionButton(onClick = onNavigateToReport) {
-                Icon(Icons.Default.Info, contentDescription = "Ver Reporte")
+            // Botón de Reporte estilizado
+            FloatingActionButton(
+                onClick = onNavigateToReport,
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = Color.White,
+                shape = MaterialTheme.shapes.extraLarge,
+                modifier = Modifier.padding(bottom = 16.dp, end = 8.dp)
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.padding(12.dp)
+                ) {
+                    Icon(Icons.Default.Description, contentDescription = null)
+                    Text("Reporte", style = MaterialTheme.typography.labelSmall, fontSize = 10.sp)
+                }
             }
         }
     ) { innerPadding ->
@@ -60,30 +101,43 @@ fun InventoryScreen(
                 .padding(innerPadding)
                 .fillMaxSize()
         ) {
-            // UI: Filtros (Botones)
+            // Filtros (Botones Estilizados)
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
+                // Botón Ver Todo
                 Button(
                     onClick = { mostrarSoloCritico = false },
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier.weight(1f).height(48.dp),
+                    shape = MaterialTheme.shapes.extraLarge,
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = if (!mostrarSoloCritico) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary
-                    )
+                        containerColor = if (!mostrarSoloCritico) MaterialTheme.colorScheme.primary else Color.Transparent,
+                        contentColor = if (!mostrarSoloCritico) Color.White else MaterialTheme.colorScheme.onSurface
+                    ),
+                    border = if (mostrarSoloCritico) BorderStroke(1.dp, Color.LightGray) else null
                 ) {
-                    Text("Ver Todo")
+                    Text("Ver Todo", fontWeight = FontWeight.SemiBold)
                 }
-                Button(
+
+                // Botón Stock Crítico con Icono
+                OutlinedButton(
                     onClick = { mostrarSoloCritico = true },
-                    modifier = Modifier.weight(1f),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = if (mostrarSoloCritico) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.secondary
-                    )
+                    modifier = Modifier.weight(1f).height(48.dp),
+                    shape = MaterialTheme.shapes.extraLarge,
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        containerColor = if (mostrarSoloCritico) MaterialTheme.colorScheme.errorContainer else Color.Transparent,
+                        contentColor = if (mostrarSoloCritico) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface
+                    ),
+                    border = BorderStroke(1.dp, if (mostrarSoloCritico) MaterialTheme.colorScheme.error else Color.LightGray)
                 ) {
-                    Text("Stock Crítico")
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(Icons.Default.WarningAmber, contentDescription = null, modifier = Modifier.size(18.dp))
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text("Stock Crítico", fontWeight = FontWeight.SemiBold)
+                    }
                 }
             }
 
@@ -112,27 +166,61 @@ fun ItemProducto(producto: Producto, onClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() },
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        shape = MaterialTheme.shapes.medium,
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        border = BorderStroke(1.dp, Color(0xFFF0F0F0))
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(
-                text = producto.nombre,
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold
-            )
-            Text(
-                text = "Precio unitario: $${producto.precio}",
-                style = MaterialTheme.typography.bodyMedium
-            )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = producto.nombre,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                
+                Spacer(modifier = Modifier.height(4.dp))
+                
+                Row {
+                    Text(
+                        text = "Precio unitario: ",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Color.Gray
+                    )
+                    Text(
+                        text = "$${producto.precio}",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+                
+                Row {
+                    Text(
+                        text = "Stock actual: ",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Color.Gray
+                    )
+                    val stockColor = if (producto.stockActual < 5) Color.Red else Color.Unspecified
+                    Text(
+                        text = "${producto.stockActual}",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = stockColor,
+                        fontWeight = if (producto.stockActual < 5) FontWeight.Bold else FontWeight.Normal
+                    )
+                }
+            }
             
-            // Requisito: Si el stock es menor a 5, el texto de la cantidad debe ponerse en Rojo
-            val stockColor = if (producto.stockActual < 5) Color.Red else Color.Unspecified
-            
-            Text(
-                text = "Stock actual: ${producto.stockActual}",
-                style = MaterialTheme.typography.bodyLarge,
-                color = stockColor,
-                fontWeight = if (producto.stockActual < 5) FontWeight.Bold else FontWeight.Normal
+            // Icono de flecha (Chevron) como en la imagen de referencia
+            Icon(
+                imageVector = Icons.Default.ChevronRight,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(24.dp)
             )
         }
     }

@@ -7,20 +7,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.Inventory2
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+
 /**
  * Pantalla 1: Ingreso de Operario.
- * Permite al trabajador ingresar su nombre para acceder al sistema.
- * 
- * @param onIngresar Función lambda que se ejecuta al presionar el botón, pasando el nombre.
  */
 @Composable
 fun LoginScreen(onIngresar: (String) -> Unit) {
-    // Estado local para el nombre del operario
     var nombre by remember { mutableStateOf("") }
     
-    // Lógica (Estado): 
-    // 1. Debe tener al menos 3 caracteres.
-    // 2. Solo debe permitir letras y espacios (bloqueando números).
     val tieneLongitudValida = nombre.trim().length >= 3
     val soloContieneLetras = nombre.all { it.isLetter() || it.isWhitespace() }
     val esValido = tieneLongitudValida && soloContieneLetras && nombre.isNotBlank()
@@ -30,24 +35,51 @@ fun LoginScreen(onIngresar: (String) -> Unit) {
             .fillMaxSize()
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically)
     ) {
-        // UI: Título
-        Text(
-            text = "Bienvenido a StockPro",
-            style = MaterialTheme.typography.headlineMedium,
-            color = MaterialTheme.colorScheme.primary
-        )
+        // 1. Icono Superior (Simulando el logo de la caja)
+        Surface(
+            modifier = Modifier.size(120.dp),
+            shape = MaterialTheme.shapes.extraLarge,
+            color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Inventory2,
+                contentDescription = null,
+                modifier = Modifier.padding(24.dp).size(64.dp),
+                tint = MaterialTheme.colorScheme.primary
+            )
+        }
 
-        Spacer(modifier = Modifier.height(32.dp))
+        // 2. Títulos y Subtítulos
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(
+                text = "StockPro",
+                style = MaterialTheme.typography.displaySmall,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary
+            )
+            Text(
+                text = "Gestión de Inventario",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
 
-        // UI: TextField para el nombre con validación visual
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // 3. TextField con Icono de Persona
         OutlinedTextField(
             value = nombre,
             onValueChange = { nombre = it },
             label = { Text("Nombre del Operario") },
+            placeholder = { Text("Ingrese su nombre") },
+            leadingIcon = {
+                Icon(Icons.Default.Person, contentDescription = null)
+            },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
+            shape = MaterialTheme.shapes.medium,
             isError = nombre.isNotEmpty() && !soloContieneLetras,
             supportingText = {
                 if (nombre.isNotEmpty() && !soloContieneLetras) {
@@ -56,16 +88,45 @@ fun LoginScreen(onIngresar: (String) -> Unit) {
             }
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
-        // UI: Button de "Ingresar al Sistema"
-        // Navegación: Al presionar, se viaja a la Pantalla 2
+        // 4. Botón "Continuar" con Flecha
         Button(
             onClick = { onIngresar(nombre) },
-            enabled = esValido, // Se habilita según la lógica de 3 caracteres
-            modifier = Modifier.fillMaxWidth()
+            enabled = esValido,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp),
+            shape = MaterialTheme.shapes.extraLarge
         ) {
-            Text("Ingresar al Sistema")
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text("Continuar", fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
+                Spacer(modifier = Modifier.width(8.dp))
+                Icon(Icons.Default.ArrowForward, contentDescription = null)
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // 5. Pie de página: Información Segura
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier.alpha(0.6f)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Lock,
+                contentDescription = null,
+                modifier = Modifier.size(16.dp)
+            )
+            Spacer(modifier = Modifier.width(4.dp))
+            Text(
+                text = "Su información es segura y confidencial",
+                style = MaterialTheme.typography.labelSmall
+            )
         }
     }
 }
