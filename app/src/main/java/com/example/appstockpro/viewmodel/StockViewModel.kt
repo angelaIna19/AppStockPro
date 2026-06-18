@@ -11,7 +11,6 @@ import com.example.appstockpro.model.Producto
  */
 class StockViewModel : ViewModel() {
 
-    // Lista reactiva de productos (Requisito: al menos 6 productos iniciales precargados)
     // Usamos mutableStateListOf para que Compose detecte cambios automáticamente.
     val listaProductos = mutableStateListOf(
         Producto(1, "Laptop Pro", "Computadora de alto rendimiento para desarrollo", 1200.0, 10),
