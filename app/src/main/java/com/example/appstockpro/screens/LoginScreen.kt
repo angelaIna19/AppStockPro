@@ -18,8 +18,12 @@ fun LoginScreen(onIngresar: (String) -> Unit) {
     // Estado local para el nombre del operario
     var nombre by remember { mutableStateOf("") }
     
-    // Lógica (Estado): El botón solo se habilita si el nombre tiene al menos 3 caracteres
-    val esValido = nombre.trim().length >= 3
+    // Lógica (Estado): 
+    // 1. Debe tener al menos 3 caracteres.
+    // 2. Solo debe permitir letras y espacios (bloqueando números).
+    val tieneLongitudValida = nombre.trim().length >= 3
+    val soloContieneLetras = nombre.all { it.isLetter() || it.isWhitespace() }
+    val esValido = tieneLongitudValida && soloContieneLetras && nombre.isNotBlank()
 
     Column(
         modifier = Modifier
@@ -28,7 +32,7 @@ fun LoginScreen(onIngresar: (String) -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        // UI: Título limpio
+        // UI: Título
         Text(
             text = "Bienvenido a StockPro",
             style = MaterialTheme.typography.headlineMedium,
@@ -37,13 +41,19 @@ fun LoginScreen(onIngresar: (String) -> Unit) {
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        // UI: TextField para el nombre
+        // UI: TextField para el nombre con validación visual
         OutlinedTextField(
             value = nombre,
             onValueChange = { nombre = it },
             label = { Text("Nombre del Operario") },
             modifier = Modifier.fillMaxWidth(),
-            singleLine = true
+            singleLine = true,
+            isError = nombre.isNotEmpty() && !soloContieneLetras,
+            supportingText = {
+                if (nombre.isNotEmpty() && !soloContieneLetras) {
+                    Text("El nombre solo debe contener letras")
+                }
+            }
         )
 
         Spacer(modifier = Modifier.height(24.dp))

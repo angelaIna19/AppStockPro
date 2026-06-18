@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.appstockpro.screens.InventoryScreen
 import com.example.appstockpro.screens.LoginScreen
 import com.example.appstockpro.viewmodel.StockViewModel
 
@@ -39,8 +40,16 @@ fun AppNavigation() {
             arguments = listOf(navArgument("nombreOperario") { type = NavType.StringType })
         ) { backStackEntry ->
             val nombre = backStackEntry.arguments?.getString("nombreOperario") ?: ""
-            // Marcador de posición para la Pantalla 2
-            PlaceholderScreen("Catálogo - Operario: $nombre")
+            InventoryScreen(
+                viewModel = viewModel,
+                operario = nombre,
+                onNavigateToEdit = { id ->
+                    navController.navigate(Screen.Edicion.createRoute(id))
+                },
+                onNavigateToReport = {
+                    navController.navigate(Screen.Reporte.route)
+                }
+            )
         }
 
         // Pantalla 3: Edición de Stock
