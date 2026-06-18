@@ -10,6 +10,7 @@ import androidx.navigation.navArgument
 import com.example.appstockpro.screens.EditStockScreen
 import com.example.appstockpro.screens.InventoryScreen
 import com.example.appstockpro.screens.LoginScreen
+import com.example.appstockpro.screens.ReportScreen
 import com.example.appstockpro.viewmodel.StockViewModel
 
 /**
@@ -70,13 +71,12 @@ fun AppNavigation() {
 
         // Pantalla 4: Reporte Financiero
         composable(Screen.Reporte.route) {
-            // Marcador de posición para la Pantalla 4
-            PlaceholderScreen("Reporte Financiero")
+            ReportScreen(
+                viewModel = viewModel,
+                onNavigateBack = {
+                    navController.popBackStack()
+                }
+            )
         }
     }
-}
-
-@Composable
-fun PlaceholderScreen(text: String) {
-    androidx.compose.material3.Text(text = "Proximamente: $text")
 }
