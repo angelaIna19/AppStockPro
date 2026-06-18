@@ -13,6 +13,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.appstockpro.viewmodel.StockViewModel
+import java.text.NumberFormat
+import java.util.Locale
 
 /**
  * Pantalla 4: Reporte Financiero.
@@ -66,9 +68,15 @@ fun ReportScreen(
                 fontWeight = FontWeight.Medium
             )
 
-            // Valor calculado en dólares
+            // Valor calculado en dólares con separador de miles
+            val formatter = NumberFormat.getNumberInstance(Locale.US).apply {
+                minimumFractionDigits = 2
+                maximumFractionDigits = 2
+            }
+            val formattedTotal = formatter.format(capitalTotal)
+
             Text(
-                text = "$${String.format("%.2f", capitalTotal)}",
+                text = "$$formattedTotal",
                 style = MaterialTheme.typography.displayMedium,
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Bold
