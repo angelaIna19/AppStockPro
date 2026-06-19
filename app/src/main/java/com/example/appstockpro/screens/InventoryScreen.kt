@@ -8,8 +8,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Description
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.WarningAmber
 import androidx.compose.material3.*
@@ -28,7 +26,7 @@ import com.example.appstockpro.viewmodel.StockViewModel
 
 /**
  * Pantalla 2: Catálogo de Inventario.
- * Muestra la lista de productos y permite filtrar por stock crítico.
+ * Muestra el listado de productos y permite filtrar por stock crítico.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -38,6 +36,7 @@ fun InventoryScreen(
     onNavigateToEdit: (Int) -> Unit,
     onNavigateToReport: () -> Unit
 ) {
+    // Control de filtro de stock
     var mostrarSoloCritico by remember { mutableStateOf(false) }
 
     val listaAVisualizar = if (mostrarSoloCritico) {
@@ -78,7 +77,7 @@ fun InventoryScreen(
             )
         },
         floatingActionButton = {
-            // Botón de Reporte estilizado
+            // Acceso al Reporte Financiero
             FloatingActionButton(
                 onClick = onNavigateToReport,
                 containerColor = MaterialTheme.colorScheme.primary,
@@ -101,14 +100,13 @@ fun InventoryScreen(
                 .padding(innerPadding)
                 .fillMaxSize()
         ) {
-            // Filtros (Botones Estilizados)
+            // Filtros de visualización
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 8.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                // Botón Ver Todo
                 Button(
                     onClick = { mostrarSoloCritico = false },
                     modifier = Modifier.weight(1f).height(48.dp),
@@ -122,7 +120,6 @@ fun InventoryScreen(
                     Text("Ver Todo", fontWeight = FontWeight.SemiBold)
                 }
 
-                // Botón Stock Crítico con Icono
                 OutlinedButton(
                     onClick = { mostrarSoloCritico = true },
                     modifier = Modifier.weight(1f).height(48.dp),
@@ -141,7 +138,7 @@ fun InventoryScreen(
                 }
             }
 
-            // Requisito: Lista (LazyColumn) con tarjetas (Card)
+            // Listado Dinámico de Productos
             LazyColumn(
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -158,7 +155,7 @@ fun InventoryScreen(
 }
 
 /**
- * Componente para cada tarjeta de producto.
+ * Tarjeta individual para cada producto del catálogo.
  */
 @Composable
 fun ItemProducto(producto: Producto, onClick: () -> Unit) {
@@ -215,10 +212,9 @@ fun ItemProducto(producto: Producto, onClick: () -> Unit) {
                 }
             }
             
-            // Icono de flecha (Chevron) como en la imagen de referencia
             Icon(
                 imageVector = Icons.Default.ChevronRight,
-                contentDescription = null,
+                contentDescription = "Editar",
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.size(24.dp)
             )

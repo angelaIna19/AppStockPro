@@ -1,19 +1,16 @@
 package com.example.appstockpro.screens
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Inventory2
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -21,11 +18,13 @@ import androidx.compose.ui.unit.sp
 
 /**
  * Pantalla 1: Ingreso de Operario.
+ * Proporciona una interfaz de bienvenida y valida el nombre del trabajador.
  */
 @Composable
 fun LoginScreen(onIngresar: (String) -> Unit) {
     var nombre by remember { mutableStateOf("") }
     
+    // Lógica de validación: 3+ letras y sin caracteres numéricos
     val tieneLongitudValida = nombre.trim().length >= 3
     val soloContieneLetras = nombre.all { it.isLetter() || it.isWhitespace() }
     val esValido = tieneLongitudValida && soloContieneLetras && nombre.isNotBlank()
@@ -37,7 +36,7 @@ fun LoginScreen(onIngresar: (String) -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically)
     ) {
-        // 1. Icono Superior (Simulando el logo de la caja)
+        // Icono Superior Decorativo
         Surface(
             modifier = Modifier.size(120.dp),
             shape = MaterialTheme.shapes.extraLarge,
@@ -51,7 +50,7 @@ fun LoginScreen(onIngresar: (String) -> Unit) {
             )
         }
 
-        // 2. Títulos y Subtítulos
+        // Identidad Visual
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
                 text = "StockPro",
@@ -66,9 +65,9 @@ fun LoginScreen(onIngresar: (String) -> Unit) {
             )
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
-        // 3. TextField con Icono de Persona
+        // Campo de Texto para el Nombre
         OutlinedTextField(
             value = nombre,
             onValueChange = { nombre = it },
@@ -90,7 +89,7 @@ fun LoginScreen(onIngresar: (String) -> Unit) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // 4. Botón "Continuar" con Flecha
+        // Botón de Acción
         Button(
             onClick = { onIngresar(nombre) },
             enabled = esValido,
@@ -111,7 +110,7 @@ fun LoginScreen(onIngresar: (String) -> Unit) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // 5. Pie de página: Información Segura
+        // Pie de página de Seguridad
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center,

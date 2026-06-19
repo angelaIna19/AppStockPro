@@ -11,14 +11,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.appstockpro.viewmodel.StockViewModel
 import java.text.NumberFormat
 import java.util.Locale
 
 /**
  * Pantalla 4: Reporte Financiero.
- * Muestra el resumen económico del inventario.
+ * Muestra el resumen económico calculado en bodega.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -26,8 +25,7 @@ fun ReportScreen(
     viewModel: StockViewModel,
     onNavigateBack: () -> Unit
 ) {
-    // Requisito de Lógica de Cálculo:
-    // Solicitamos al ViewModel los cálculos (prohibido hacer sumatorias aquí en la vista).
+    // Consulta directa de cálculos matemáticos al ViewModel (Exigencia técnica)
     val capitalTotal = viewModel.calcularValorTotalInventario()
     val productosEnCero = viewModel.obtenerProductosEnCero()
 
@@ -51,7 +49,7 @@ fun ReportScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            // Icono decorativo de finanzas
+            // Icono Financiero Decorativo
             Icon(
                 imageVector = Icons.Default.MonetizationOn,
                 contentDescription = null,
@@ -61,14 +59,13 @@ fun ReportScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Requisito UI: Diseño destacado para "Capital Invertido Total"
             Text(
                 text = "Capital Invertido Total",
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Medium
             )
 
-            // Valor calculado en dólares con separador de miles
+            // Formateo de moneda regional con separador de miles
             val formatter = NumberFormat.getNumberInstance(Locale.US).apply {
                 minimumFractionDigits = 2
                 maximumFractionDigits = 2
@@ -84,7 +81,7 @@ fun ReportScreen(
 
             Spacer(modifier = Modifier.height(48.dp))
 
-            // Requisito: Mostrar indicador de productos con stock en cero
+            // Indicador de alerta para productos agotados
             Card(
                 colors = CardDefaults.cardColors(
                     containerColor = if (productosEnCero > 0) 
@@ -119,7 +116,6 @@ fun ReportScreen(
 
             Spacer(modifier = Modifier.height(48.dp))
 
-            // Requisito: Botón para volver al catálogo
             Button(
                 onClick = onNavigateBack,
                 modifier = Modifier.fillMaxWidth()

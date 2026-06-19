@@ -22,7 +22,7 @@ import com.example.appstockpro.viewmodel.StockViewModel
 
 /**
  * Pantalla 3: Edición de Stock.
- * Permite modificar la cantidad de un producto específico.
+ * Permite ajustar la cantidad disponible de un producto.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -31,16 +31,16 @@ fun EditStockScreen(
     productoId: Int,
     onNavigateBack: () -> Unit
 ) {
-    // Buscamos el producto en el ViewModel usando el ID recibido
     val producto = viewModel.obtenerProducto(productoId)
 
-    // Si el producto no existe, mostramos un error (aunque no debería pasar)
     if (producto == null) {
-        Text("Producto no encontrado")
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Text("Producto no encontrado")
+        }
         return
     }
 
-    // Estado para el stock real del producto (usamos String para permitir el input manual)
+    // Estado local para permitir ingreso manual o mediante botones
     var stockInput by remember { mutableStateOf(producto.stockActual.toString()) }
     val stockActualValue = stockInput.toIntOrNull() ?: 0
 
@@ -66,7 +66,7 @@ fun EditStockScreen(
                 .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Nombre y Descripción centrados
+            // Información del Producto
             Text(
                 text = producto.nombre,
                 style = MaterialTheme.typography.displaySmall,
@@ -84,7 +84,7 @@ fun EditStockScreen(
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Tarjeta de Stock Actual
+            // Visor de Stock con Entrada de Texto
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -105,7 +105,6 @@ fun EditStockScreen(
                         style = MaterialTheme.typography.titleMedium
                     )
                     
-                    // INPUT GRANDE: Ahora el usuario puede tocar el número y escribir
                     BasicTextField(
                         value = stockInput,
                         onValueChange = { 
@@ -132,7 +131,7 @@ fun EditStockScreen(
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Panel de ajuste de unidades
+            // Controles de Ajuste Rápido (+/- 1)
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = MaterialTheme.shapes.large,
@@ -146,7 +145,6 @@ fun EditStockScreen(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    // Sección de Restar
                     Button(
                         onClick = { 
                             if (stockActualValue > 0) {
@@ -161,7 +159,6 @@ fun EditStockScreen(
                         Text("-", fontSize = 32.sp, fontWeight = FontWeight.Light)
                     }
 
-                    // Divisor Vertical
                     Box(
                         modifier = Modifier
                             .height(60.dp)
@@ -169,7 +166,6 @@ fun EditStockScreen(
                             .background(Color(0xFFE0E0E0))
                     )
 
-                    // Sección de Sumar
                     Button(
                         onClick = { 
                             stockInput = (stockActualValue + 1).toString()
@@ -185,13 +181,13 @@ fun EditStockScreen(
 
             Spacer(modifier = Modifier.weight(1f))
 
-            // Botón Guardar y Volver
+            // Confirmación de Cambios
             Button(
                 onClick = {
                     viewModel.actualizarStock(productoId, stockActualValue)
                     onNavigateBack()
                 },
-                enabled = stockInput.isNotBlank(), // Validación: No permite guardar si está vacío
+                enabled = stockInput.isNotBlank(),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(64.dp),
