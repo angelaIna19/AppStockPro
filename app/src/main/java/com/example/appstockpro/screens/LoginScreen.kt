@@ -18,15 +18,19 @@ import androidx.compose.ui.unit.sp
 
 /**
  * Pantalla 1: Ingreso de Operario.
- * Proporciona una interfaz de bienvenida y valida el nombre del trabajador.
  */
 @Composable
 fun LoginScreen(onIngresar: (String) -> Unit) {
     var nombre by remember { mutableStateOf("") }
     
     // Lógica de validación: 3+ letras y sin caracteres numéricos
-    val tieneLongitudValida = nombre.trim().length >= 3
     val soloContieneLetras = nombre.all { it.isLetter() || it.isWhitespace() }
+    val tieneLongitudValida = nombre.trim().length >= 3
+    
+    // Estado visual: mostramos error si el usuario escribió algo que no son letras
+    val mostrarErrorLetras = nombre.isNotEmpty() && !soloContieneLetras
+    
+    // El botón se habilita solo si pasa todas las reglas
     val esValido = tieneLongitudValida && soloContieneLetras && nombre.isNotBlank()
 
     Column(
@@ -79,9 +83,9 @@ fun LoginScreen(onIngresar: (String) -> Unit) {
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
             shape = MaterialTheme.shapes.medium,
-            isError = nombre.isNotEmpty() && !soloContieneLetras,
+            isError = mostrarErrorLetras,
             supportingText = {
-                if (nombre.isNotEmpty() && !soloContieneLetras) {
+                if (mostrarErrorLetras) {
                     Text("El nombre solo debe contener letras")
                 }
             }
@@ -102,7 +106,7 @@ fun LoginScreen(onIngresar: (String) -> Unit) {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
-                Text("Continuar", fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
+                Text("Ingresar al Sistema", fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
                 Spacer(modifier = Modifier.width(8.dp))
                 Icon(Icons.Default.ArrowForward, contentDescription = null)
             }

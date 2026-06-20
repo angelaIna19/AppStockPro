@@ -5,9 +5,10 @@ import androidx.lifecycle.ViewModel
 import com.example.appstockpro.model.Producto
 
 /**
+ * clase llamada StockViewModel que extiende de la clase ViewModel de Android.
  * StockViewModel: El cerebro de la aplicación.
  * Gestiona el estado global del inventario y la lógica de negocio.
- * Sigue el patrón MVVM exigido.
+ * StockViewModel, la cual hereda de la clase base ViewModel
  */
 class StockViewModel : ViewModel() {
 
@@ -45,7 +46,6 @@ class StockViewModel : ViewModel() {
     /**
      * Calcula el valor total de la inversión en bodega.
      * Fórmula: Sumatoria de (Precio * Stock) de todos los productos.
-     * Requisito: Los cálculos pertenecen al ViewModel, no a la Vista.
      */
     fun calcularValorTotalInventario(): Double {
         return listaProductos.sumOf { it.precio * it.stockActual }
@@ -53,7 +53,6 @@ class StockViewModel : ViewModel() {
 
     /**
      * Obtiene la lista de productos que tienen menos de 5 unidades.
-     * Utilizado para el filtro "Stock Crítico" de la Pantalla 2.
      */
     fun obtenerProductosEnRiesgo(): List<Producto> {
         return listaProductos.filter { it.stockActual < 5 }
@@ -61,7 +60,6 @@ class StockViewModel : ViewModel() {
 
     /**
      * Cuenta cuántos productos tienen stock igual a cero.
-     * Requisito para la Pantalla 4 (Reporte).
      */
     fun obtenerProductosEnCero(): Int {
         return listaProductos.count { it.stockActual == 0 }

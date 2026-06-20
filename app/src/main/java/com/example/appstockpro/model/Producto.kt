@@ -1,14 +1,9 @@
 package com.example.appstockpro.model
 
 /**
+ * El paquete Model contiene la definición de nuestra entidad Producto.
+ * Es el contrato que asegura que tanto el ViewModel como las Vistas manejen la misma estructura de datos
  * Clase de datos que representa un producto en el inventario.
- * Contiene la información básica requerida por el examen.
- * 
- * @param id Identificador único del producto.
- * @param nombre Nombre descriptivo del producto.
- * @param descripcion Detalle de lo que es el producto.
- * @param precio Valor unitario en dólares.
- * @param stockActual Cantidad disponible en bodega (usamos var para permitir cambios).
  */
 data class Producto(
     val id: Int,
